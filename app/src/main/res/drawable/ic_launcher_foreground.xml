@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 🏢 skyline: same building logo as the app header -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <group android:translateX="22" android:translateY="22">
+        <path android:fillColor="#2BA48C" android:pathData="M10,26h14v32h-14z" />
+        <path android:fillColor="#2C63D8" android:pathData="M22,8h18v50h-18z" />
+        <path android:fillColor="#2A4F9C" android:pathData="M38,18h14v40h-14z" />
+        <path android:fillColor="#14306E" android:pathData="M50,34h8v24h-8z" />
+        <path android:fillColor="#D6E4FF" android:pathData="M26,14h4v4h-4zM32,14h4v4h-4zM26,22h4v4h-4zM32,22h4v4h-4zM26,30h4v4h-4zM32,30h4v4h-4zM26,38h4v4h-4zM32,38h4v4h-4zM41,24h3v3h-3zM46,24h3v3h-3zM41,31h3v3h-3zM46,31h3v3h-3zM13,32h3v3h-3zM18,32h3v3h-3zM13,39h3v3h-3zM18,39h3v3h-3z" />
+        <path android:fillColor="#14306E" android:pathData="M4,57h58v3h-58z" />
+    </group>
+</vector>

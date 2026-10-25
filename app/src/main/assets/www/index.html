@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>بُنيان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#eef3fd; --bg2:#f8faff; --card:#ffffffcc; --ink:#24324d; --mute:#7a869e; --blue:#2f6fe8; --blue2:#7aa4f5;
+  --green:#21a64a; --red:#e0393e; --amber:#f0a51c; --line:#e3e9f6; --shadow:0 10px 28px rgba(47,90,180,.10),0 2px 6px rgba(47,90,180,.06);
+  --r:24px;
+}
+:root[data-theme=dark]{
+  --bg1:#0f1626; --bg2:#141d31; --card:#1b2640e6; --ink:#e8eefc; --mute:#93a0bb; --line:#26324d; --shadow:0 10px 28px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:Cairo,'Noto Sans Arabic',Tahoma,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg2),var(--bg1));
+  min-height:100%;padding-bottom:96px;overflow-x:hidden}
+button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:16px;color:var(--ink);background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue2)}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 8px}
+.top{display:grid;grid-template-columns:64px 1fr 64px;align-items:center;margin-top:6px}
+.title{text-align:center;font-weight:800;font-size:24px;color:var(--blue);letter-spacing:.2px}
+.logo{width:58px;height:58px;justify-self:end}
+.round{width:52px;height:52px;border-radius:18px;background:var(--card);box-shadow:var(--shadow);display:grid;place-items:center;font-size:24px;position:relative}
+.dot{position:absolute;top:8px;left:9px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.bname{display:flex;align-items:center;gap:10px;margin:14px 0 10px}
+.bname span{font-weight:700;color:var(--mute);font-size:15px}
+.pill{background:var(--card);box-shadow:var(--shadow);border-radius:30px;padding:12px 18px;display:flex;justify-content:center;align-items:center;gap:12px;font-weight:600;font-size:17px}
+.seg{margin-top:16px;background:var(--card);box-shadow:var(--shadow);border-radius:30px;padding:6px;display:grid;grid-template-columns:1fr 1fr}
+.seg button{padding:11px;border-radius:24px;font-weight:700;font-size:16px;color:var(--mute)}
+.seg button.on{background:linear-gradient(90deg,var(--blue2),var(--blue));color:#fff;box-shadow:0 6px 16px rgba(47,111,232,.35)}
+.period{display:flex;justify-content:center;align-items:center;gap:18px;margin:14px 0 10px;font-weight:700;font-size:18px}
+.period button{width:34px;height:34px;border-radius:12px;background:var(--card);box-shadow:var(--shadow);font-size:18px;color:var(--blue)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{background:var(--card);box-shadow:var(--shadow);border-radius:var(--r);padding:16px 16px 14px;display:flex;justify-content:space-between;align-items:center;min-height:118px}
+.stat .lbl{font-weight:700;font-size:15px}
+.stat .val{font-weight:800;font-size:30px;line-height:1.25;direction:ltr;text-align:right}
+.stat .cur{color:var(--mute);font-size:12px}
+.ico{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:30px;flex:none}
+.g{background:#e3f7e8}.r{background:#fde6e7}.b{background:#e3edfd}.a{background:#fff3d6}.p{background:#efe6fd}.t{background:#dff6f6}
+:root[data-theme=dark] .g{background:#173a25}:root[data-theme=dark] .r{background:#3d1b20}:root[data-theme=dark] .b{background:#1b2d50}:root[data-theme=dark] .a{background:#3d321a}:root[data-theme=dark] .p{background:#2c2147}:root[data-theme=dark] .t{background:#173a3a}
+.chip{display:inline-block;background:#fff1d3;color:#b77700;border-radius:12px;padding:2px 10px;font-weight:800;font-size:13px;margin-top:4px}
+:root[data-theme=dark] .chip{background:#3d321a;color:#ffc65a}
+h3{margin:22px 4px 12px;font-size:20px;font-weight:800}
+.act{background:var(--card);box-shadow:var(--shadow);border-radius:var(--r);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:16px;min-height:76px;text-align:right}
+.act .ico{width:52px;height:52px;font-size:26px}
+.wide{grid-column:1/-1;width:86%;justify-self:center}
+.nav{position:fixed;bottom:0;left:0;right:0;padding:8px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--bg1) 30%)}
+.nav div{max-width:560px;margin:0 auto;background:var(--card);backdrop-filter:blur(12px);box-shadow:var(--shadow);border-radius:28px;display:grid;grid-template-columns:repeat(4,1fr);padding:8px}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:700;color:var(--mute);padding:4px 0}
+.nav button i{font-style:normal;font-size:22px;width:56px;height:38px;border-radius:18px;display:grid;place-items:center}
+.nav button.on{color:var(--blue)}.nav button.on i{background:linear-gradient(90deg,var(--blue2),var(--blue));box-shadow:0 6px 14px rgba(47,111,232,.35)}
+.card{background:var(--card);box-shadow:var(--shadow);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .sub{color:var(--mute);font-size:13px}
+.muted{color:var(--mute)}
+.btn{background:linear-gradient(90deg,var(--blue2),var(--blue));color:#fff;border-radius:16px;padding:13px 18px;font-weight:800;font-size:16px;width:100%;box-shadow:0 6px 16px rgba(47,111,232,.3)}
+.btn.ghost{background:var(--bg2);color:var(--blue);box-shadow:none;border:1px solid var(--line)}
+.btn.green{background:linear-gradient(90deg,#4cc56f,#21a64a);box-shadow:0 6px 16px rgba(33,166,74,.3)}
+.btn.red{background:linear-gradient(90deg,#f06a6e,#e0393e);box-shadow:0 6px 16px rgba(224,57,62,.3)}
+.sm{padding:7px 12px;font-size:14px;border-radius:12px;width:auto}
+.field{margin-bottom:12px}.field label{display:block;font-weight:700;font-size:14px;margin:0 4px 6px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:7px 12px;font-weight:700;font-size:14px}
+.chips button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.sheet-bg{position:fixed;inset:0;background:rgba(15,25,50,.35);backdrop-filter:blur(2px);z-index:50;display:none;align-items:flex-end}
+.sheet-bg.show{display:flex}
+.sheet{background:var(--bg2);width:100%;max-width:560px;margin:0 auto;border-radius:28px 28px 0 0;max-height:90vh;overflow:auto;padding:10px 16px calc(20px + env(safe-area-inset-bottom));animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+.sheet h2{margin:4px 0 14px;font-size:20px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.x{width:36px;height:36px;border-radius:12px;background:var(--card);font-size:18px}
+.pop-bg{position:fixed;inset:0;background:rgba(15,25,50,.45);z-index:80;display:none;align-items:center;justify-content:center;padding:24px}
+.pop-bg.show{display:flex}
+.pop{background:var(--bg2);border-radius:26px;padding:22px;max-width:360px;width:100%;text-align:center;box-shadow:var(--shadow);animation:up .2s}
+.pop .big{font-size:52px}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#24324d;color:#fff;padding:10px 18px;border-radius:16px;font-weight:700;z-index:99;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.bars{display:flex;align-items:flex-end;gap:5px;height:150px;padding-top:6px}
+.bars .m{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end}
+.bars .duo{display:flex;gap:2px;align-items:flex-end;height:120px}
+.bars .duo i{width:7px;border-radius:4px 4px 0 0;min-height:2px}
+.bars .lb{font-size:10px;color:var(--mute)}
+.inc{background:var(--green)}.exp{background:var(--red)}
+.meter{height:10px;border-radius:6px;background:var(--line);overflow:hidden}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--blue))}
+.mic{width:130px;height:130px;border-radius:50%;margin:18px auto;display:grid;place-items:center;font-size:56px;background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;box-shadow:0 14px 34px rgba(47,111,232,.4)}
+.mic.listen{animation:pulse 1s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,111,232,.5)}100%{box-shadow:0 0 0 26px rgba(47,111,232,0)}}
+.ex{background:var(--bg2);border:1px dashed var(--line);border-radius:14px;padding:8px 12px;font-size:14px;margin:6px 0;text-align:right;width:100%}
+.amt-in{color:var(--green);font-weight:800;direction:ltr}.amt-out{color:var(--red);font-weight:800;direction:ltr}
+.empty{text-align:center;color:var(--mute);padding:24px 8px}
+.credit{text-align:center;color:var(--mute);font-size:12px;margin:18px 0 6px}
+.tag{font-size:12px;border-radius:8px;padding:1px 8px;font-weight:700}
+.tag.ok{background:#e3f7e8;color:var(--green)}.tag.bad{background:#fde6e7;color:var(--red)}.tag.wait{background:#fff3d6;color:#b77700}
+.switch{position:relative;width:48px;height:28px;flex:none}.switch input{opacity:0;width:0;height:0}
+.switch span{position:absolute;inset:0;background:var(--line);border-radius:20px;transition:.2s}
+.switch span:before{content:'';position:absolute;width:22px;height:22px;right:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.switch input:checked+span{background:var(--blue)}.switch input:checked+span:before{transform:translateX(-20px)}
+.view{display:none}.view.on{display:block;animation:fade .2s}
+@keyframes fade{from{opacity:.3}to{opacity:1}}
+.prog{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin:12px 0}.prog i{display:block;height:100%;width:0;background:var(--blue);transition:width .2s}
+</style>
+</head>
+<body>
+
+<!-- 🏠 HOME -->
+<section class="view on" id="v-home"><div class="wrap">
+  <div class="top">
+    <button class="round" onclick="App.openAlerts()">🔔<b class="dot" id="bellDot" hidden></b></button>
+    <div class="title">بُنيان - Bonian</div>
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+      <defs><linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a7bf0"/><stop offset="1" stop-color="#14306e"/></linearGradient>
+      <linearGradient id="lg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cc4a6"/><stop offset="1" stop-color="#1b6b69"/></linearGradient></defs>
+      <rect x="10" y="26" width="14" height="32" rx="2" fill="url(#lg2)"/><rect x="22" y="8" width="18" height="50" rx="2" fill="url(#lg1)"/>
+      <rect x="38" y="18" width="14" height="40" rx="2" fill="#2a4f9c"/><rect x="50" y="34" width="8" height="24" rx="1" fill="#14306e"/>
+      <g fill="#cfe0ff" opacity=".85"><rect x="26" y="14" width="4" height="4"/><rect x="32" y="14" width="4" height="4"/><rect x="26" y="22" width="4" height="4"/><rect x="32" y="22" width="4" height="4"/><rect x="26" y="30" width="4" height="4"/><rect x="32" y="30" width="4" height="4"/><rect x="26" y="38" width="4" height="4"/><rect x="32" y="38" width="4" height="4"/><rect x="41" y="24" width="3" height="3"/><rect x="46" y="24" width="3" height="3"/><rect x="41" y="31" width="3" height="3"/><rect x="46" y="31" width="3" height="3"/><rect x="13" y="32" width="3" height="3"/><rect x="18" y="32" width="3" height="3"/><rect x="13" y="39" width="3" height="3"/><rect x="18" y="39" width="3" height="3"/></g>
+      <rect x="4" y="57" width="58" height="3" rx="1.5" fill="#14306e"/>
+    </svg>
+  </div>
+  <div class="bname"><button class="round" onclick="App.pickBuilding()">🏢</button><span id="bName"></span></div>
+  <div class="pill">📅 <span id="today"></span></div>
+  <div class="seg"><button id="segM" class="on" onclick="App.setMode('m')">شهري</button><button id="segY" onclick="App.setMode('y')">سنوي</button></div>
+  <div class="period"><button onclick="App.shift(-1)">›</button><span id="pLabel"></span><button onclick="App.shift(1)">‹</button></div>
+  <div class="grid2">
+    <button class="stat" onclick="App.openList('expense')"><div><div class="lbl">المصروفات</div><div class="val" style="color:var(--red)" id="sExp"></div><div class="cur">جنيه</div></div><div class="ico r">🧾</div></button>
+    <button class="stat" onclick="App.openList('payment')"><div><div class="lbl">الإيرادات</div><div class="val" style="color:var(--green)" id="sInc"></div><div class="cur">جنيه</div></div><div class="ico g">💵</div></button>
+    <button class="stat" onclick="App.openOverdue()"><div><div class="lbl">المتأخرات</div><div class="val" style="color:var(--amber)"><span id="sLate"></span> <small style="font-size:16px">شقة</small></div><span class="chip" id="sLateAmt"></span></div><div class="ico a">⏰</div></button>
+    <button class="stat" onclick="App.go('reports')"><div><div class="lbl">رصيد الصندوق</div><div class="val" style="color:var(--blue)" id="sFund"></div><div class="cur">جنيه</div></div><div class="ico b">🏦</div></button>
+  </div>
+  <h3>إجراءات سريعة</h3>
+  <div class="grid2">
+    <button class="act" onclick="App.payForm()"><span>تسجيل تحصيل</span><div class="ico g">💰</div></button>
+    <button class="act" onclick="App.expForm()"><span>تسجيل مصروف</span><div class="ico r">📕</div></button>
+    <button class="act" onclick="App.units()"><span>الشقق</span><div class="ico b">🚪</div></button>
+    <button class="act" onclick="App.feeForm()"><span>ضبط شهرية العمارة</span><div class="ico b">🏢</div></button>
+    <button class="act" onclick="App.residents()"><span>السكان<br>وطلبات الانضمام</span><div class="ico p">👥</div></button>
+    <button class="act" onclick="App.notify()"><span>إرسال إشعار</span><div class="ico a">📣</div></button>
+    <button class="act wide" onclick="App.contacts()"><span>أرقام وخدمات تهمك</span><div class="ico t">📞</div></button>
+  </div>
+</div></section>
+
+<!-- 📊 REPORTS -->
+<section class="view" id="v-reports"><div class="wrap">
+  <div class="top"><span></span><div class="title">📊 التقارير</div><span></span></div>
+  <div class="seg"><button id="rsegM" class="on" onclick="App.setMode('m')">شهري</button><button id="rsegY" onclick="App.setMode('y')">سنوي</button></div>
+  <div class="period"><button onclick="App.shift(-1)">›</button><span id="rLabel"></span><button onclick="App.shift(1)">‹</button></div>
+  <div id="rBody"></div>
+</div></section>
+
+<!-- 🎤 SMART -->
+<section class="view" id="v-smart"><div class="wrap">
+  <div class="top"><span></span><div class="title">🎤 إدخال ذكي</div><span></span></div>
+  <p class="muted" style="text-align:center;margin:10px 0 0">اتكلم أو اكتب، وبُنيان يفهم ويسجّل 🤖</p>
+  <button class="mic" id="micBtn" onclick="App.listen()">🎙️</button>
+  <div class="card">
+    <div class="field"><textarea id="smartTxt" rows="2" placeholder="مثال: حصلت 300 من شقة 5" oninput="App.parse()"></textarea></div>
+    <div id="smartOut"></div>
+  </div>
+  <div class="card"><b>💡 أمثلة</b>
+    <button class="ex" onclick="App.ex(this)">حصلت 300 جنيه من شقة 5</button>
+    <button class="ex" onclick="App.ex(this)">شقة 2 دفعت تلتمية</button>
+    <button class="ex" onclick="App.ex(this)">صرفت 250 على فاتورة الكهرباء</button>
+    <button class="ex" onclick="App.ex(this)">دفعت للسباك ميتين</button>
+    <button class="ex" onclick="App.ex(this)">صيانة الأسانسير 1500</button>
+  </div>
+</div></section>
+
+<!-- ⋯ MORE -->
+<section class="view" id="v-more"><div class="wrap">
+  <div class="top"><span></span><div class="title">⚙️ المزيد</div><span></span></div>
+  <div id="mBody" style="margin-top:14px"></div>
+</div></section>
+
+<nav class="nav"><div>
+  <button class="on" id="n-home" onclick="App.go('home')"><i>🏠</i>الرئيسية</button>
+  <button id="n-reports" onclick="App.go('reports')"><i>📊</i>التقارير</button>
+  <button id="n-smart" onclick="App.go('smart')"><i>🎤</i>إدخال ذكي</button>
+  <button id="n-more" onclick="App.go('more')"><i>⋯</i>المزيد</button>
+</div></nav>
+
+<div class="sheet-bg" id="sheetBg" onclick="if(event.target===this)App.close()"><div class="sheet" id="sheet"></div></div>
+<div class="pop-bg" id="popBg"><div class="pop" id="pop"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
