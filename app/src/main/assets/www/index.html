@@ -29,6 +29,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue2)}
 .round{width:52px;height:52px;border-radius:18px;background:var(--card);box-shadow:var(--shadow);display:grid;place-items:center;font-size:24px;position:relative}
 .dot{position:absolute;top:8px;left:9px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
 .bname{display:flex;align-items:center;gap:10px;margin:14px 0 10px}
+.round.locked{background:#fff3d6}
 .bname span{font-weight:700;color:var(--mute);font-size:15px}
 .pill{background:var(--card);box-shadow:var(--shadow);border-radius:30px;padding:12px 18px;display:flex;justify-content:center;align-items:center;gap:12px;font-weight:600;font-size:17px}
 .seg{margin-top:16px;background:var(--card);box-shadow:var(--shadow);border-radius:30px;padding:6px;display:grid;grid-template-columns:1fr 1fr}
@@ -123,7 +124,7 @@ h3{margin:22px 4px 12px;font-size:20px;font-weight:800}
       <rect x="4" y="57" width="58" height="3" rx="1.5" fill="#14306e"/>
     </svg>
   </div>
-  <div class="bname"><button class="round" onclick="App.pickBuilding()">🏢</button><span id="bName"></span></div>
+  <div class="bname"><button class="round" onclick="App.pickBuilding()">🏢</button><span id="bName" style="flex:1"></span><button class="round" id="lockBtn" onclick="App.toggleLock()">🔓</button></div>
   <div class="pill">📅 <span id="today"></span></div>
   <div class="seg"><button id="segM" class="on" onclick="App.setMode('m')">شهري</button><button id="segY" onclick="App.setMode('y')">سنوي</button></div>
   <div class="period"><button onclick="App.shift(-1)">›</button><span id="pLabel"></span><button onclick="App.shift(1)">‹</button></div>

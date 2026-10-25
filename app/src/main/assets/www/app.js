@@ -59,6 +59,8 @@
     $('sLate').textContent = od.count; $('sLateAmt').textContent = fmt(od.amount) + ' جنيه';
     const al = L.alertsFor(b, today()).filter(a => a.go !== 'notify').length + (App._upd ? 1 : 0);
     $('bellDot').hidden = !al; $('bellDot').textContent = al;
+    $('lockBtn').textContent = !hasPw() ? '🔓' : (isAdmin() ? '🔓' : '🔒');
+    $('lockBtn').classList.toggle('locked', hasPw() && !isAdmin());
     renderReports(); renderMore();
   }
 
@@ -99,7 +101,10 @@
     const b = B();
     const auto = String(N.getPref('auto', 'true')) === 'true', wifi = String(N.getPref('wifi', 'true')) === 'true';
     const dark = String(N.getPref('dark', 'false')) === 'true';
-    $('mBody').innerHTML = `
+    const adm = isAdmin();
+    $('mBody').innerHTML = (adm ? '' : `<div class="card" style="text-align:center"><div class="big" style="font-size:44px">🔒</div><b>إعدادات الإدارة مقفولة</b>
+        <p class="muted" style="font-size:14px;margin:6px 0 12px">بيانات العمارة، النسخ الاحتياطي والتعديلات محتاجة كلمة السر.</p>
+        <button class="btn" onclick="App.toggleLock()">🔑 دخول الإدارة</button></div>`) + (!adm ? '' : `
       <div class="card"><b>🏢 بيانات العمارة</b>
         <div class="field" style="margin-top:10px"><label>اسم العمارة</label><input id="mName" value="${esc(b.name)}"></div>
         <div class="field"><label>العنوان</label><input id="mAddr" value="${esc(b.address)}"></div>
@@ -107,16 +112,20 @@
         <div class="field"><label>رصيد افتتاحي للصندوق</label><input id="mOpen" type="number" inputmode="decimal" value="${b.opening}"></div></div>
         <div class="field"><label>بداية الحساب (شهر)</label><input id="mStart" type="month" value="${b.startMonth}"></div>
         <button class="btn" onclick="App.saveBuilding()">💾 حفظ</button>
-      </div>
+      </div>`) + `
       <div class="card">
         <div class="row"><span>🏘️ العمارات (${S.buildings.length})</span><button class="btn ghost sm" onclick="App.pickBuilding()">إدارة</button></div>
         <div class="row"><span>📞 أرقام وخدمات</span><button class="btn ghost sm" onclick="App.contacts()">فتح</button></div>
         <div class="row"><span>🌙 الوضع الليلي</span><label class="switch"><input type="checkbox" ${dark ? 'checked' : ''} onchange="App.setDark(this.checked)"><span></span></label></div>
       </div>
+      ${!adm ? '' : `<div class="card"><b>🔐 كلمة سر الإدارة</b>
+        <p class="muted" style="font-size:14px;margin:6px 0 10px">${hasPw() ? '✅ مفعّلة — أي تعديل محتاج كلمة السر. بتتقفل لوحدها بعد 5 دقايق من غير استخدام، أو لما تسيب التطبيق أكتر من دقيقة.' : '⚠️ مش مفعّلة — أي حد يمسك الموبايل يقدر يعدّل.'}</p>
+        <div class="grid2"><button class="btn" onclick="App.pwForm()">${hasPw() ? '✏️ تغيير' : '🔐 تفعيل'}</button>${hasPw() ? '<button class="btn ghost" onclick="App.lock(true)">🔒 اقفل دلوقتي</button>' : ''}</div>
+      </div>
       <div class="card"><b>💾 نسخة احتياطية</b>
         <p class="muted" style="font-size:14px;margin:6px 0 10px">كل البيانات على موبايلك. احفظ نسخة على Drive أو واتساب عشان متضيعش.</p>
         <div class="grid2"><button class="btn" onclick="App.backup()">📤 حفظ نسخة</button><button class="btn ghost" onclick="App.restore()">📥 استرجاع</button></div>
-      </div>
+      </div>`}
       <div class="card"><b>⚙️ الإعدادات</b>
         <div class="row"><span>🤫 تحديث تلقائي صامت (مرة يومياً)</span><label class="switch"><input type="checkbox" ${auto ? 'checked' : ''} onchange="App.pref('auto',this.checked)"><span></span></label></div>
         <div class="row"><span>📶 التحديث على الواي فاي فقط</span><label class="switch"><input type="checkbox" ${wifi ? 'checked' : ''} onchange="App.pref('wifi',this.checked)"><span></span></label></div>
@@ -447,7 +456,7 @@
     const upd = App._upd ? `<div class="row" onclick="App.showUpdate(true)"><span>🎁 تحديث جديد ${esc(App._upd.name)}</span><span class="tag ok">حدّث</span></div>` : '';
     sheet('🔔 التنبيهات', `<div class="card">${upd}${al.map(a => `<div class="row" ${a.go ? `onclick="App.alertGo('${a.go}')"` : ''}><span>${a.icon} ${esc(a.text)}</span>${a.go ? '<span class="muted">‹</span>' : ''}</div>`).join('') || (upd ? '' : '<div class="empty">🎉 كله تمام</div>')}</div>`);
   }
-  function alertGo(g) { close(); ({ overdue: openOverdue, residents, notify, reports: () => go('reports') })[g](); }
+  function alertGo(g) { close(); ({ overdue: openOverdue, residents: () => App.residents(), notify: () => App.notify(), reports: () => go('reports') })[g](); }
 
   // ---------- 📊 export ----------
   function shareReport() { N.share(L.monthReport(B(), key())); }
@@ -524,6 +533,71 @@
   function onProgress(p) { const i = document.querySelector('#uProg i'); if (i) i.style.width = Math.round(p * 100) + '%'; }
   function onInstallMsg(m) { toast(m); if (/فشل|⚠️/.test(m)) unpop(); }
 
+  // ---------- 🔐 admin password ----------
+  const ADMIN_MIN = 5;                       // auto-lock after 5 minutes without touches
+  let unlockedUntil = 0, fails = 0, blockedUntil = 0;
+  const hasPw = () => !!String(N.getPref('pw', '') || '');
+  const isAdmin = () => !hasPw() || Date.now() < unlockedUntil;
+  function hashPw(p) {
+    const s = 'bonian|' + L.normDigits(p).trim();
+    try { if (N.hash) return N.hash(s); } catch (e) {}
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;                     // browser preview only
+    for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+    return ((h2 >>> 0).toString(16) + (h1 >>> 0).toString(16));
+  }
+  function touch() { if (hasPw() && Date.now() < unlockedUntil) unlockedUntil = Date.now() + ADMIN_MIN * 60000; }
+  function lock(manual) {
+    if (!hasPw() || !unlockedUntil) return;
+    unlockedUntil = 0; close(); unpop(); render(); if (manual) toast('🔒 اتقفل وضع الإدارة');
+  }
+  /** run fn only for the admin; asks for the password when locked */
+  function guard(fn, args) {
+    if (isAdmin()) { touch(); return fn.apply(null, args); }
+    App._after = () => fn.apply(null, args);
+    askPw();
+  }
+  function askPw(msg) {
+    const hint = String(N.getPref('pwHint', '') || '');
+    pop(`<div class="big">🔐</div><h3 style="margin:4px 0 8px">وضع الإدارة</h3><p class="muted" style="margin:0 0 12px">${msg || 'اكتب كلمة السر عشان تعدّل'}</p>
+      <div class="field"><input id="pwIn" type="password" autocomplete="off" style="text-align:center;font-size:20px;letter-spacing:4px" onkeydown="if(event.key==='Enter')App.tryPw()"></div>
+      <div class="grid2"><button class="btn" onclick="App.tryPw()">🔓 دخول</button><button class="btn ghost" onclick="App._after=null;App.unpop();App.render()">إلغاء</button></div>
+      ${hint ? `<button class="muted" style="margin-top:12px;font-size:14px" onclick="App.toast('💡 ' + ${esc(JSON.stringify(hint))})">نسيت؟ 💡 التلميح</button>` : ''}`);
+    setTimeout(() => { const i = $('pwIn'); if (i) i.focus(); }, 150);
+  }
+  function tryPw() {
+    if (Date.now() < blockedUntil) return toast('⏳ استنى ' + Math.ceil((blockedUntil - Date.now()) / 1000) + ' ثانية');
+    if (hashPw(val('pwIn') || '') !== String(N.getPref('pw', ''))) {
+      fails++; if (fails >= 5) { blockedUntil = Date.now() + 30000; fails = 0; }
+      $('pwIn').value = ''; return toast('❌ كلمة السر غلط');
+    }
+    fails = 0; unlockedUntil = Date.now() + ADMIN_MIN * 60000; unpop(); render();
+    const f = App._after; App._after = null; if (f) f(); else toast('🔓 أهلاً يا أدمن');
+  }
+  function toggleLock() { if (!hasPw()) return App.pwForm(); if (isAdmin()) lock(true); else { App._after = null; askPw(); } }
+  function pwForm() {
+    sheet('🔐 كلمة سر الإدارة', `
+      <p class="muted" style="font-size:14px;margin-top:0">الكل يقدر يشوف الأرقام والتقارير، لكن التسجيل والتعديل والإعدادات بكلمة السر بس.</p>
+      <div class="field"><label>كلمة السر الجديدة (4 حروف/أرقام على الأقل)</label><input id="pw1" type="password" autocomplete="new-password"></div>
+      <div class="field"><label>تأكيد كلمة السر</label><input id="pw2" type="password" autocomplete="new-password"></div>
+      <div class="field"><label>تلميح يفكرك بيها (اختياري — متكتبش كلمة السر نفسها)</label><input id="pwH" value="${esc(N.getPref('pwHint', '') || '')}"></div>
+      <button class="btn" onclick="App.savePw()">💾 حفظ</button>
+      ${hasPw() ? '<button class="btn ghost" style="margin-top:10px;color:var(--red)" onclick="App.removePw()">🗑️ إلغاء كلمة السر</button>' : ''}
+      <p class="muted" style="font-size:13px">⚠️ لو نسيتها ومفيش تلميح، مش هتقدر تعدّل. احفظها في مكان آمن.</p>`);
+  }
+  function savePw() {
+    const a = L.normDigits(val('pw1') || '').trim(), c = L.normDigits(val('pw2') || '').trim();
+    if (a.length < 4) return toast('✍️ 4 حروف/أرقام على الأقل');
+    if (a !== c) return toast('❌ التأكيد مش زي كلمة السر');
+    const h = val('pwH').trim(); if (h && h === a) return toast('⚠️ التلميح ميبقاش هو كلمة السر');
+    N.setPref('pw', hashPw(a)); N.setPref('pwHint', h);
+    unlockedUntil = Date.now() + ADMIN_MIN * 60000; close(); render(); toast('🔐 كلمة السر اتفعّلت');
+  }
+  function removePw() {
+    pop(`<div class="big">⚠️</div><p><b>تلغي كلمة السر؟</b><br><span class="muted">أي حد هيقدر يعدّل.</span></p><div class="grid2"><button class="btn red" onclick="App.doRemovePw()">إلغاء</button><button class="btn ghost" onclick="App.unpop()">لا</button></div>`);
+  }
+  function doRemovePw() { N.setPref('pw', ''); N.setPref('pwHint', ''); unlockedUntil = 0; unpop(); close(); render(); toast('🔓 كلمة السر اتلغت'); }
+  document.addEventListener('click', touch, true);
+
   window.App = {
     go, setMode, shift, close, unpop, payForm, payHint, savePay, expForm, pickCat, saveExp, delTx, doDel, openList,
     feeForm, saveFee, units, bulkUnits, doBulk, unitForm, saveUnit, delUnit, doDelUnit, statement, statements,
@@ -531,10 +605,15 @@
     contacts, saveContact, delContact, pickBuilding, switchB, addB, delB, doDelB, saveBuilding, openAlerts, alertGo,
     shareReport, exportCSV, backup, restore, onImport, doImport, listen, onSpeech, onSpeechErr, ex, parse, confirmSmart,
     pref, setDark, checkNow, onUpdate, showUpdate, doUpdate, onProgress, onInstallMsg,
+    toast, render, lock, tryPw, toggleLock, pwForm, savePw, removePw, doRemovePw, isAdmin,
     back() { if ($('popBg').classList.contains('show')) { unpop(); return true; } if ($('sheetBg').classList.contains('show')) { close(); return true; }
       if (!$('v-home').classList.contains('on')) { go('home'); return true; } return false; }
   };
   if (!window.Bn) window.Bn = N;
+  // 🔐 everything that changes data or opens admin screens needs the password (when one is set)
+  ['payForm', 'expForm', 'delTx', 'feeForm', 'units', 'bulkUnits', 'unitForm', 'residents', 'notify', 'remind', 'remindAll',
+   'pickBuilding', 'saveBuilding', 'backup', 'restore', 'saveContact', 'delContact', 'confirmSmart', 'pref', 'pwForm', 'removePw']
+    .forEach(k => { const f = App[k]; App[k] = (...a) => guard(f, a); });
 
   // ---------- start ----------
   if (String(N.getPref('dark', 'false')) === 'true') setDark(true); else document.documentElement.dataset.theme = 'light';

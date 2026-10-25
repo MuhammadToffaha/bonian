@@ -18,6 +18,12 @@ jobs:
       - name: 🧪 Logic tests
         run: node tests/logic.test.js
 
+      - name: 🔐 Admin lock UI test
+        run: |
+          npm i --no-save --silent playwright@1
+          npx playwright install --with-deps chromium > /dev/null
+          node tests/admin-lock.test.js
+
       - uses: actions/setup-java@v5
         with:
           distribution: temurin

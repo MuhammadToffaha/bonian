@@ -89,6 +89,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() { super.onResume(); Prefs.inForeground = true }
     override fun onPause() { super.onPause(); Prefs.inForeground = false }
+
+    // 🔒 away from the app for more than a minute (not just a quick WhatsApp / mic / file trip) → lock admin mode
+    private var stoppedAt = 0L
+    override fun onStop() { super.onStop(); stoppedAt = System.currentTimeMillis() }
+    override fun onStart() {
+        super.onStart()
+        if (stoppedAt > 0 && System.currentTimeMillis() - stoppedAt > 60_000) js("window.App&&App.lock()")
+        stoppedAt = 0
+    }
     override fun onDestroy() { if (instance === this) instance = null; super.onDestroy() }
 
     fun js(code: String) = runOnUiThread { runCatching { web.evaluateJavascript(code, null) } }
@@ -116,6 +125,10 @@ class MainActivity : AppCompatActivity() {
                 if (!tmp.renameTo(dataFile)) { dataFile.writeText(json); tmp.delete() }
             }
         }
+
+        /** 🔐 SHA-256 of the admin password (only the hash is stored) */
+        @JavascriptInterface fun hash(s: String): String =
+            java.security.MessageDigest.getInstance("SHA-256").digest(s.toByteArray()).joinToString("") { "%02x".format(it) }
 
         @JavascriptInterface fun version(): String = BuildConfig.VERSION_NAME
         @JavascriptInterface fun versionCode(): Int = BuildConfig.VERSION_CODE
